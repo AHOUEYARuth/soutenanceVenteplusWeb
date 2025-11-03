@@ -2,10 +2,10 @@ import ky from 'ky';
 import { VerbHttpType } from './utils';
 export const baseURL = {
     serverProd: 'https://api.ylomi.bj/api/',
-    local: 'http://127.0.0.1:4000/api/',
+    local: 'http://127.0.0.1:5000/api/',
     serverTest: 'https://preprod.ylomi.bj/api/',
 }
-export const baseUrlNotApi = "http://127.0.0.1:4000/"
+export const baseUrlNotApi = "http://127.0.0.1:5000/"
 const httpRequest = ky.extend({
   prefixUrl: baseURL.local,
   timeout: false,
