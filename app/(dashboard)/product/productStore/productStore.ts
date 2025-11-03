@@ -1,0 +1,101 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { create } from "zustand";
+import { createCategoryRequest, createProductRequest, deleteCategoriesRequest, deleteProductRequest, filterProductsRequest, getCategoriesRequest, getPoductsRequest, updateProductRequest } from "../productRequest/productRequest";
+ 
+type State = {
+  open: boolean;
+  categories: Array<any>;
+  products: Array<any>;
+  selectedCategory: string; 
+  filteredProducts: Array<any>;
+  editedProduct: any;
+};
+
+type ProductActions = {
+  setOpen: () => void;
+  categoryAction: (categoryFormData: any) => Promise<void>;
+  getCategoriesAction: (shopId: string) => Promise<void>;
+  setCategories: (categories: any) => void;
+  deleteCategoryAction: (catId: string) => Promise<void>;
+  createProductAction: (productFormData: any) => Promise<void>;
+  getProductsActions: (shopId: string) => Promise<void>;
+  setProducts: (products: any) => void;
+  deleteProductAction: (productId: string) => Promise<void>;
+  filterProducts: (
+    shopId: string,
+    name: string,
+    categoryId: string,
+    dateFrom: string,
+    dateTo: string
+  ) => Promise<void>;
+  clearCategoryFilter: () => void;
+  editedProductAction: (productId: string, payload: any) => Promise<void>;
+  setEditingProduct: (editedProduct: any) => void;
+};
+
+export const useProductStore = create<State & ProductActions>((set) => ({
+  open: false,
+  categories: [],
+  products: [],
+  selectedCategory: "",
+  filteredProducts: [],
+  editedProduct: null,
+  setOpen: () => set((state) => ({ open: !state.open })),
+  categoryAction: async (categoryFormData) => {
+    const response = await createCategoryRequest(categoryFormData);
+    return response;
+  },
+  getCategoriesAction: async (shopId) => {
+    const response = await getCategoriesRequest(shopId);
+    return response;
+  },
+  setCategories(categories) {
+    set({ categories: categories });
+  },
+  deleteCategoryAction: async (catId) => {
+    const response = await deleteCategoriesRequest(catId);
+    return response;
+  },
+  createProductAction: async (productFormData) => {
+    const response = await createProductRequest(productFormData);
+    return response;
+  },
+  getProductsActions: async (shopId) => {
+    const response = await getPoductsRequest(shopId);
+    return response;
+  },
+  setProducts: (products) => set((state) => ({ products: products })),
+
+  deleteProductAction: async (productId) => {
+    const response = await deleteProductRequest(productId);
+    return response;
+  },
+  filterProducts: async (shopId, name, categoryId, dateFrom, dateTo) => {
+    if (!shopId) {
+      return;
+    }
+
+    const response = await filterProductsRequest(
+      shopId,
+      name,
+      categoryId,
+      dateFrom,
+      dateTo
+    );
+    return response;
+  },
+
+  clearCategoryFilter: () => {
+    set({
+      filteredProducts: [],
+      selectedCategory: "",
+    });
+  },
+  editedProductAction: async (productId, payload) => {
+    const response = await updateProductRequest(productId, payload);
+    return response;
+  },
+  setEditingProduct: (editedProduct) => set({ editedProduct: editedProduct }),
+}));
+
